@@ -1,0 +1,46 @@
+so i am making a keylogger in c using linux syscalls 
+(i have to take my friends laptop for x86 linux lol)
+
+so what basically we are doing is 
+when you cd into /dev/input which means devices and input like whatever hardware is there such as keyboard 
+so there you will find a folder either "by-id" or "by-path" cd into that 
+and ls -lh ... you will see something like 
+"platform-i8042-serio-0-event-kbd -> ../event3"
+
+here kbd means keyboard right ...so what it does is captures the whatever keys you press ... but that are not human readable format
+so i guess or basically trying to use that functionality or that folder to capture the keystrokes of the keyboard and 
+capture them and show them in terminal ... like you pressed a then a will show up ... i mean i guess 
+i have to hard code it like if key == a then printf "a" something like that since i dont see any other way
+but lets see how it goes
+
+and yes here we stuck .. we need buffer to read right
+since read syscall is of format 
+ssize_t read(int fildes, void *buf, size_t nbyte);
+
+so we needed buffer ...
+then i found out there is one path such as linux/input.h
+include this as library 
+it will take file from /usr/include/linux/input.h
+
+the very first struct defined there is input_event 
+details are mentioned there you can check the file 
+
+https://stackoverflow.com/questions/16695432/input-event-structure-description-from-linux-input-h
+also here is one stackoverflow post for that check that if you want
+
+and here we encountered another problem ... 
+the file in /usr/include/linux/input-event-codes.h
+it contains input event codes but the problem is they are not mapped in order ... they are mapped like what you see on keyboard
+like q then w then e then r .. like that .. so unfortunately we cant loop ... we have to manually add if and else if statements
+nvm .. happens
+
+another thing you might notice here is there are multiple outputs even when you press a single key 
+so reason is given in kernel's docs https://www.kernel.org/doc/html/v6.12/input/event-codes.html#ev-key
+
+so what i did is 
+inserted two conditions there 
+
+and yeah then lastly we used fflush(stdout) to get the real time output into terminal .. i mean thats crazy 
+you are typing something into your browser or anywhere ... its logging everything
+
+
