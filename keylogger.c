@@ -51,14 +51,14 @@ int main(int argc, char *argv[]){
     struct input_event ie;
 
     struct input_event ie;
-    while (1) {
+    while(1){
         read(fd, &ie, sizeof(ie));
         if (ie.type != EV_KEY || ie.value != 1) continue;
         
         char* keyname = get_key_name(ie.code);
-        if (keyname) {
+        if(keyname){
             printf("%s", keyname);
-        } else {
+        }else{
             printf("[?%d]", ie.code);
         }
         fflush(stdout);
