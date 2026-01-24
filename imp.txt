@@ -43,4 +43,10 @@ inserted two conditions there
 and yeah then lastly we used fflush(stdout) to get the real time output into terminal .. i mean thats crazy 
 you are typing something into your browser or anywhere ... its logging everything
 
+another imp thing is that you have to use sudo in order to run the keylogger binary
+usage : 
+sudo ./keylogger /dev/input/event3
+
+in my system the keyboard event was event 3 ... you need to check which event corresponds to keyboard on your system 
+well i belive this is something to learn ... currently working on how to scale it to industrial level
 
