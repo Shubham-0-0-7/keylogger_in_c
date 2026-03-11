@@ -49,8 +49,6 @@ int main(int argc, char *argv[]){
     }
     printf("opened fd: %d\n", fd);
     struct input_event ie;
-
-    struct input_event ie;
     while(1){
         read(fd, &ie, sizeof(ie));
         if (ie.type != EV_KEY || ie.value != 1) continue;
